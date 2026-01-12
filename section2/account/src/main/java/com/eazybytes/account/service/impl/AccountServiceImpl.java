@@ -13,7 +13,7 @@ import com.eazybytes.account.mapper.CustomerMapper;
 import com.eazybytes.account.repository.AccountsRepository;
 import com.eazybytes.account.repository.CustomerRepository;
 import com.eazybytes.account.service.IAccountsService;
-import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -60,15 +60,7 @@ public class AccountServiceImpl implements IAccountsService {
         return newAccount;
     }
 
-//    @Override
-//    public CustomerDto fetchAccount(String mobileNumber) {
-//
-//        Optional<Customer> cus = customerRepository.findByMobileNumber(mobileNumber);
-//        if(cus.isPresent()) {
-//            return CustomerMapper.mapToCustomerDto(cus.get(), new CustomerDto());
-//        }
-//        return null;
-//    }
+
 
     @Override
     public CustomerDto fetchAccount(String mobileNumber) {
@@ -104,6 +96,19 @@ public class AccountServiceImpl implements IAccountsService {
         }
         return  isUpdated;
     }
+
+
+    @Override
+    public boolean deleteAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
+        accountsRepository.deleteByCustomerId(customer.getCustomerId());
+        customerRepository.deleteById(customer.getCustomerId());
+        return true;
+    }
+
+
 
 
 
